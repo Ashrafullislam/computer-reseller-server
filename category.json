@@ -1,0 +1,16 @@
+[
+    {
+        "id": "1",
+         "categoryName":"Desktop"        
+    },
+    {
+        "id":"2",
+        "categoryName":"Laptop"
+    },{
+        "id":"3",
+        "categoryName":"Apple"
+    },{
+        "id":"4",
+        "categoryName":"Tablet"
+    }
+]
