@@ -60,13 +60,13 @@ const run = async() => {
     const user = await usersCollection.insertOne(userReq);
     res.send(user)
    })
+
    // get users info from database 
    app.get('/users', async(req,res) => {
     const query = {};
     const users = await usersCollection.find(query).toArray()
     res.send(users)
    })
-
 
 
    // find data from client side and savedata in databse 
@@ -76,13 +76,14 @@ const run = async() => {
     res.send(booking)
    })
    
-   // get booking data from database booking collection 
-   app.get('/bookings', async(req,res)=> {
-    const query = {}
-    const bookings = await bookingCollection.find(query).toArray()
-    res.send(bookings)
-   })
 
+   // get my orders by user email 
+   app.get('/bookings', async(req,res) => {
+    const email = req.query.email;
+    const query = {email:email};
+    const myOrders = await bookingCollection.find(query).toArray();
+    res.send(myOrders)
+   })
 
  }
  finally{
