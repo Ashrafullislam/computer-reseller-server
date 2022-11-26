@@ -24,7 +24,9 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const run = async() => {
  try{
   const categoryOptionCollection = client.db('computerResell').collection('category')
-  const productsCollection = client.db('computerResell').collection('categoryProducts')
+  const productsCollection = client.db('computerResell').collection('categoryProducts');
+  const usersCollection = client.db('computerResell').collection('users')
+  const bookingCollection = client.db('computerResell').collection('bookings')
    // get all category otion with products info 
    app.get('/categories', async(req,res) => {
     const query = {}
@@ -49,6 +51,38 @@ const run = async() => {
     res.send(productDetails)
 
    } )
+
+
+
+   // save user info in database 
+   app.post('/users', async(req,res)=> {
+    const userReq = req.body ;
+    const user = await usersCollection.insertOne(userReq);
+    res.send(user)
+   })
+   // get users info from database 
+   app.get('/users', async(req,res) => {
+    const query = {};
+    const users = await usersCollection.find(query).toArray()
+    res.send(users)
+   })
+
+
+
+   // find data from client side and savedata in databse 
+   app.post('/bookings', async(req,res) => {
+    const bookingReq = req.body ;
+    const booking = await bookingCollection.insertOne(bookingReq)
+    res.send(booking)
+   })
+   
+   // get booking data from database booking collection 
+   app.get('/bookings', async(req,res)=> {
+    const query = {}
+    const bookings = await bookingCollection.find(query).toArray()
+    res.send(bookings)
+   })
+
 
  }
  finally{
