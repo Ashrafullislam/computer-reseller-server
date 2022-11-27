@@ -79,16 +79,8 @@ const run = async() => {
 
    })
 
-   // get specific products details by id 
-//    app.get('/productDetails/:id', async(req,res) => {
-//     const id = req.params.id ;
-//     const query = {_id:ObjectId(id)}
-//     const productDetails = await  productsCollection.findone(query)
-//     res.send(productDetails)
+   // ------------ get products by products category end  here  ---------------//
 
-//    } )
-
- // ------------ get products by products category start here  ---------------//
 
 
 
@@ -121,7 +113,6 @@ const run = async() => {
     res.send(users)
    })
 
-
    // save user info in database 
    app.post('/users', async(req,res)=> {
     const userReq = req.body ;
@@ -133,7 +124,7 @@ const run = async() => {
 
 
 
- //=========user make admin  collection start here ============//
+ //=========user make admin  collection and dashboard  start here ============//
     // check usertype :if userType === seller ? he will able to adde a products 
     app.get('/users/seller/:email', async(req,res)=> {
         const email = req.params.email;
@@ -146,8 +137,6 @@ const run = async() => {
         // }
         res.send({isSeller:user?.userType === "seller"})
     })
-
-   
 
    // check user isAdmin ,if user.role not admin ? .. he will not access go to admin dashbord url
    app.get('/users/admin/:email', async(req,res)=> {
@@ -177,6 +166,17 @@ const run = async() => {
     const result = await usersCollection.updateOne(filter,updateDoc,options);
     res.send(result)
  })
+
+    // delete user from database  
+    app.put('/users/:email', async(req,res)=> {
+        const email = req.params.email;
+        const query = {email:email};
+        const deleteUser = await usersCollection.deleteOne(query);
+        res.send(deleteUser)
+       })
+
+    //=========== dashboard part end here ================//
+
 
 
   
