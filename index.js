@@ -175,6 +175,13 @@ const run = async() => {
     res.send(booking)
    })
    
+   // delete a specific order by id 
+   app.put('/booking/:id', async(req,res)=> {
+    const id = req.params.id;
+    const query = {_id:ObjectId(id)};
+    const deleteOrder = await bookingCollection.deleteOne(query);
+    res.send(deleteOrder)
+   })
 
    // get my orders by user email 
    app.get('/bookings',verifyJWT, async(req,res) => {
