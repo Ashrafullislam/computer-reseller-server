@@ -4,6 +4,7 @@ const app = express()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000 ;
 require('dotenv').config();
+const { query } = require('express');
 
 // require for json web token
 const jwt = require('jsonwebtoken');
@@ -135,8 +136,11 @@ const run = async() => {
         // if(user?.userType !== "seller"){
         //     return res.status(403).send({message:'forbidden access'})
         // }
-        res.send({isSeller:user?.userType === "seller"})
+        res.send({isSeller:user?.role  })
     })
+   
+
+ 
 
    // check user isAdmin ,if user.role not admin ? .. he will not access go to admin dashbord url
    app.get('/users/admin/:email', async(req,res)=> {
@@ -145,6 +149,7 @@ const run = async() => {
     const user = await usersCollection.findOne(query);
     res.send({isAdmin: user?.role === "admin"})
    } )
+
 
  // update user by specific id and make admin  .....
  app.put('/users/admin/:id',verifyJWT, async(req,res)=> {
@@ -167,6 +172,7 @@ const run = async() => {
     res.send(result)
  })
 
+
     // delete user from database  
     app.put('/users/:email', async(req,res)=> {
         const email = req.params.email;
@@ -176,6 +182,9 @@ const run = async() => {
        })
 
     //=========== dashboard part end here ================//
+
+
+
 
 
 
