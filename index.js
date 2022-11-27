@@ -21,7 +21,7 @@ app.get('/', (req,res) => {
 
 //------------------ Mongodb  section start here --------------------//
 const uri =`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.rhjlmgh.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri)
+// console.log(uri)
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 // -------------------verify specific user by jwt token ---------------//
@@ -80,13 +80,13 @@ const run = async() => {
    })
 
    // get specific products details by id 
-   app.get('/productDetails/:id', async(req,res) => {
-    const id = req.params.id ;
-    const query = {_id:ObjectId(id)}
-    const productDetails = await  productsCollection.findone(query).toArray()
-    res.send(productDetails)
+//    app.get('/productDetails/:id', async(req,res) => {
+//     const id = req.params.id ;
+//     const query = {_id:ObjectId(id)}
+//     const productDetails = await  productsCollection.findone(query)
+//     res.send(productDetails)
 
-   } )
+//    } )
 
  // ------------ get products by products category start here  ---------------//
 
@@ -101,7 +101,7 @@ const run = async() => {
     const user = await usersCollection.findOne(query);
     // if get user , give a token 
     if(user){
-        const token = jwt.sign({email},process.env.ACCESS_TOKEN,{expiresIn:'4h'})
+        const token = jwt.sign({email},process.env.ACCESS_TOKEN,{expiresIn:'2h'})
         return res.send({accessToken:token})
     }
     // if user not found from db send the status 
@@ -134,6 +134,20 @@ const run = async() => {
 
 
  //=========user make admin  collection start here ============//
+    // check usertype :if userType === seller ? he will able to adde a products 
+    app.get('/users/seller/:email', async(req,res)=> {
+        const email = req.params.email;
+        const query = {email}
+        // const decodedEmail = req.decoded.email;
+        // const query = {email:decodedEmail};
+        const user = await usersCollection.findOne(query);
+        // if(user?.userType !== "seller"){
+        //     return res.status(403).send({message:'forbidden access'})
+        // }
+        res.send({isSeller:user?.userType === "seller"})
+    })
+
+   
 
    // check user isAdmin ,if user.role not admin ? .. he will not access go to admin dashbord url
    app.get('/users/admin/:email', async(req,res)=> {
