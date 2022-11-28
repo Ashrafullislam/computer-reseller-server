@@ -60,6 +60,7 @@ const run = async() => {
   const productsCollection = client.db('computerResell').collection('categoryProducts');
   const usersCollection = client.db('computerResell').collection('users')
   const bookingCollection = client.db('computerResell').collection('bookings')
+  const reportCollection = client.db('computerResell').collection('reports')
 
 
 // ----------- get all category otion with products info --------------/
@@ -70,7 +71,11 @@ const run = async() => {
    })
    
 // ------------ get products by products category start here  ---------------//
-
+   app.post('/products', async(req,res)=> {
+    const data = req.body;
+     const sendProductsDb = await productsCollection.insertOne(data);
+     res.send(sendProductsDb); 
+   })
    // get products under the category 
    app.get('/categoryProducts/:id', async(req,res) => {
     const id = req.params.id;
@@ -83,7 +88,7 @@ const run = async() => {
    // ------------ get products by products category end  here  ---------------//
 
 
-
+  
 
 
 // ------------user verify and save user and get user---------------//
@@ -103,7 +108,31 @@ const run = async() => {
 // ------------user verify and save user and get user---------------//
 
 
+// report post data in database and get report from database //
+// post repots  data in db
 
+app.post('/reports', async(req,res)=>{
+    const report = req.body
+    console.log(report);
+    const result = await reportCollection.insertOne(report)
+    res.send(result)
+})
+  //get users data from mongodb
+  app.get('/reports', async (req,res)=>{
+    const query = {};
+    const cursor = reportCollection.find(query)
+    const reports = await cursor.toArray()
+    res.send(reports)
+})
+
+// delete report from client side and databse //
+app.put('/reports/:id', async(req,res)=> {
+    const id = req.params.id;
+    const query = {_id:ObjectId(id)};
+    const deleteReport = await reportCollection.deleteOne(query);
+    res.send(deleteReport);
+
+})
 
 
 //=========user info save database and get user part start here ============
