@@ -201,6 +201,27 @@ app.put('/reports/:id', async(req,res)=> {
     res.send(result)
  })
 
+ // =========user verify by admin > ===========
+ app.put('/users/verify/:id',verifyJWT, async(req,res)=> {
+    // load user from db and check role admin have or haven't
+    const decodedEmail = req.decoded.email;
+    const query = {email:decodedEmail};
+    const user = await usersCollection.findOne(query);
+    if(user.role !== "admin" ){
+        return res.status(403).send({message:'forbidden access '})
+    } 
+    const id = req.params.id ;
+    const filter = {_id:ObjectId(id)};
+    const options = {upsert:true};
+    const updateDoc = {
+        $set:{
+            verify:'verified'
+        },
+    };
+    const result = await usersCollection.updateOne(filter,updateDoc,options);
+    res.send(result)
+ })
+
 
     // delete user from database  
     app.put('/users/:email', async(req,res)=> {
